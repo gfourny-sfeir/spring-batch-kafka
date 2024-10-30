@@ -40,7 +40,7 @@ public class KafkaItemReaderConfig<T, R> {
 
         record PartitionOffset(TopicPartition topicPartition, long offset) {
         }
-        
+
         return kafkaItemReaderProperties.partitionOffset()
                 .stream()
                 .map(partitionOffset -> new PartitionOffset(
