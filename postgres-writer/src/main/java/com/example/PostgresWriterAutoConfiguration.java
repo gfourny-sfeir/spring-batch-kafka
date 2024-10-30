@@ -5,11 +5,11 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
-import com.example.config.ItemWriterConfig;
+import com.example.config.PostgresItemWriterConfig;
 import com.example.writer.FournitureSaver;
 
 @AutoConfiguration
-@ImportAutoConfiguration(ItemWriterConfig.class)
+@ImportAutoConfiguration(PostgresItemWriterConfig.class)
 public class PostgresWriterAutoConfiguration {
 
     @Bean

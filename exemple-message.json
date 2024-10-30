@@ -1,0 +1,13 @@
+{
+  "fournitures": [
+    {
+      "nom": "gateaux",
+      "prixHT": 3.87,
+      "fournisseur": {
+        "nom": "U-Tech",
+        "adresse": "adresse",
+        "siret": "siret"
+      }
+    }
+  ]
+}

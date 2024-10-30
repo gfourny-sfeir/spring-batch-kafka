@@ -13,7 +13,7 @@ import com.example.model.Fourniture;
 import com.example.writer.FournitureSaver;
 
 @Configuration(proxyBeanMethods = false)
-public class ItemWriterConfig {
+public class PostgresItemWriterConfig {
 
     @Bean
     ItemWriter<List<Fourniture>> fournitureItemWriter(FournitureSaver fournitureSaver) {

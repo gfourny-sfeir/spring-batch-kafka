@@ -25,6 +25,7 @@
 		<module>commande-domain</module>
 		<module>kafka-reader</module>
 		<module>postgres-writer</module>
+		<module>gcp-storage-writer</module>
 		<module>application</module>
 	</modules>
 
