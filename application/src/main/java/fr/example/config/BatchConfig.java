@@ -18,6 +18,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.PostgresPagingQueryProvider;
+import org.springframework.batch.item.kafka.KafkaItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -46,7 +47,7 @@ public class BatchConfig {
     Step retrieveCommand(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
-            ItemReader<Commande> kafkaItemReader,
+            KafkaItemReader<String, Commande> kafkaItemReader,
             ProcessCommand processCommand,
             ItemWriter<List<Fourniture>> fournitureItemWriter) {
 
