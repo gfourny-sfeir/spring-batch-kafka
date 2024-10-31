@@ -16,6 +16,7 @@ import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
 import org.springframework.batch.item.database.support.PostgresPagingQueryProvider;
 import org.springframework.batch.item.kafka.KafkaItemReader;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
@@ -48,7 +49,7 @@ public class BatchConfig {
             PlatformTransactionManager transactionManager,
             KafkaItemReader<String, Commande> kafkaItemReader,
             FilterCommand filterCommand,
-            ItemWriter<List<Fourniture>> fournitureItemWriter) {
+            ItemWriter<List<Fourniture>> postgresItemWriter) {
 
         ItemProcessor<Commande, List<Fourniture>> itemProcessor = filterCommand::filter;
 
@@ -56,7 +57,7 @@ public class BatchConfig {
                 .<Commande, List<Fourniture>>chunk(10, transactionManager)
                 .reader(kafkaItemReader)
                 .processor(itemProcessor)
-                .writer(fournitureItemWriter)
+                .writer(postgresItemWriter)
                 .build();
     }
 

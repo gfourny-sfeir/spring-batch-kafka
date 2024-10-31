@@ -4,19 +4,20 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.stereotype.Component;
+
 import com.example.model.OutputFile;
 import com.example.saver.FileSaver;
-import com.example.writer.WriteFile;
 import com.google.cloud.storage.BlobId;
 
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
-public class FileWriter implements WriteFile<OutputFile, BlobId> {
+public class FileWriter {
 
     private final FileSaver fileSaver;
 
-    @Override
     public BlobId write(OutputFile outputFile) {
         return fileSaver.save(
                 () -> outputFile.toString().getBytes(StandardCharsets.UTF_8),

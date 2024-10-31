@@ -9,20 +9,21 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 
-import com.example.writer.WriteFile;
+import com.example.Write;
+import com.example.model.OutputFile;
 
 @EnableRetry
 @Configuration(proxyBeanMethods = false)
-public class GcpStorageItemWriterConfig<T, R> {
+public class GcpStorageItemWriterConfig {
 
     @Bean
-    ItemWriter<T> fileItemWriter(WriteFile<T, R> writeFile) {
+    ItemWriter<OutputFile> fileItemWriter(Write writer) {
         return chunk -> {
             CopyOnWriteArrayList<CompletableFuture<Void>> futures = new CopyOnWriteArrayList<>();
 
             try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
-                for (var t : chunk.getItems()) {
-                    var future = CompletableFuture.runAsync(() -> writeFile.write(t), executor);
+                for (var item : chunk.getItems()) {
+                    var future = CompletableFuture.runAsync(() -> writer.write(item), executor);
                     futures.add(future);
                 }
             }

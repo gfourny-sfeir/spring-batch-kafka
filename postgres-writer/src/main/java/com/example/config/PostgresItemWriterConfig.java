@@ -9,13 +9,14 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.example.model.Fourniture;
 import com.example.saver.SaveFourniture;
 
 @Configuration(proxyBeanMethods = false)
-public class PostgresItemWriterConfig<T> {
+public class PostgresItemWriterConfig {
 
     @Bean
-    ItemWriter<List<T>> fournitureItemWriter(SaveFourniture<T> saver) {
+    ItemWriter<List<Fourniture>> postgresItemWriter(SaveFourniture<Fourniture> saver) {
         return chunk -> {
             CopyOnWriteArrayList<CompletableFuture<Void>> futures = new CopyOnWriteArrayList<>();
 

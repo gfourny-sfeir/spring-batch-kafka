@@ -38,6 +38,8 @@ public class FileSaver {
 
         blobInfoBuilder.accept(builder);
 
+        log.info("Ecriture du fichier {}", fileName);
+
         return storage.create(builder.build(), content.get()).getBlobId();
     }
 }
