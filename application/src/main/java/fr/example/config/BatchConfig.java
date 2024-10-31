@@ -21,10 +21,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import com.example.filter.FilterCommand;
 import com.example.model.Commande;
 import com.example.model.Fourniture;
 import com.example.model.OutputFile;
-import com.example.processor.ProcessCommand;
+import com.example.transformer.TransformCommand;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,10 +47,10 @@ public class BatchConfig {
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             KafkaItemReader<String, Commande> kafkaItemReader,
-            ProcessCommand processCommand,
+            FilterCommand filterCommand,
             ItemWriter<List<Fourniture>> fournitureItemWriter) {
 
-        ItemProcessor<Commande, List<Fourniture>> itemProcessor = processCommand::process;
+        ItemProcessor<Commande, List<Fourniture>> itemProcessor = filterCommand::filter;
 
         return new StepBuilder("retrieveCommand", jobRepository)
                 .<Commande, List<Fourniture>>chunk(10, transactionManager)
@@ -79,18 +80,21 @@ public class BatchConfig {
     }
 
     @Bean
+    ItemProcessor<OutputFile, OutputFile> processor(TransformCommand transformCommand) {
+        return transformCommand::transform;
+    }
+
+    @Bean
     Step writeToBucket(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             JdbcPagingItemReader<OutputFile> fournitureItemReader,
-            ItemWriter<OutputFile> fileItemWriter) {
+            ItemWriter<OutputFile> fileItemWriter,
+            ItemProcessor<OutputFile, OutputFile> processor) {
         return new StepBuilder("writeToBucket", jobRepository)
                 .<OutputFile, OutputFile>chunk(10, transactionManager)
                 .reader(fournitureItemReader)
-                .processor(item -> {
-                    log.info("Processing file {}", item);
-                    return item;
-                })
+                .processor(processor)
                 .writer(fileItemWriter)
                 .build();
     }
