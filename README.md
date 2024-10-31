@@ -31,6 +31,13 @@ Ce repo présente plusieurs modules :
 >   - Adapter implémentant un ItemWriter custom permettant d'écrire l'objet du commande-domain dans une base de donnée
 >   - Composant spécifique au métier commande-domain
 
+# 🏎️ Utilisation de l'application
+
+Monter l'infra en local:
+```shell
+docker compose up
+```
+
 # 📊 FLow Chart
 ```mermaid
 flowchart TD
