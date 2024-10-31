@@ -10,7 +10,13 @@ import jakarta.validation.constraints.NotBlank;
 @Validated
 @ConfigurationProperties(prefix = "batch-storage.writer")
 public record GcpStorageItemWriterProperties(
+        /*
+         Nom du bucket
+         */
         @NotBlank String bucketName,
+        /*
+        Configuration de la politique de retry sur l'écriture du fichier
+         */
         @Nonnull RetryWrite retryWrite
 ) {
 
