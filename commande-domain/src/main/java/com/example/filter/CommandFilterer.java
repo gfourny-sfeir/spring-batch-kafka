@@ -20,7 +20,7 @@ public class CommandFilterer implements FilterCommand {
     public List<Fourniture> filter(@Nonnull Commande commande) {
         requireNonNull(commande, () -> "La commande ne peut pas être null");
 
-        log.info("Filtering command {}", commande);
+        log.info("Filtrage de la commande {}", commande);
 
         return commande.fournitures();
     }

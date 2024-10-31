@@ -14,8 +14,6 @@ import org.springframework.boot.autoconfigure.kafka.KafkaProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import static java.util.Objects.isNull;
-
 @Configuration(proxyBeanMethods = false)
 public class KafkaItemReaderConfig<T, R> {
 
@@ -24,9 +22,7 @@ public class KafkaItemReaderConfig<T, R> {
         var properties = new Properties();
         properties.putAll(kafkaProperties.buildConsumerProperties(null));
 
-        final var partitionOffsets = isNull(kafkaItemReaderProperties.partitionOffset()) ?
-                new HashMap<TopicPartition, Long>() :
-                buildTopicPartition(kafkaItemReaderProperties);
+        final var partitionOffsets = buildTopicPartition(kafkaItemReaderProperties);
 
         return new KafkaItemReaderBuilder<T, R>()
                 .consumerProperties(properties)

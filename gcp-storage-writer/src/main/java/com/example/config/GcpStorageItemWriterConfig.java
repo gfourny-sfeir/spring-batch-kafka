@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.retry.annotation.EnableRetry;
 
 import com.example.Write;
-import com.example.model.OutputFile;
 
 @EnableRetry
 @Configuration(proxyBeanMethods = false)

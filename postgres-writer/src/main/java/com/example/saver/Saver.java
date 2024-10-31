@@ -21,7 +21,7 @@ public class Saver {
     public void save(@Nonnull Fourniture fourniture, @Nonnull String request, @Nonnull Map<String, ?> parameters) {
         allNotNull(fourniture, request, parameters);
 
-        log.info("Saving fourniture {}", fourniture);
+        log.info("Enregistrement de la fourniture {}", fourniture);
 
         jdbcClient.sql(request)
                 .params(parameters)

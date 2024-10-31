@@ -22,13 +22,15 @@ spring:
     jdbc:
       initialize-schema: always
     job:
-      name: filtrageJob
+      name: commandJob
   sql:
     init:
       mode: always
   cloud:
     gcp:
       project-id: emulator
+  jpa:
+    open-in-view: false
 
 batch-kafka:
   reader:
@@ -39,13 +41,13 @@ batch-kafka:
     process-name: retrieveCommande
     poll-timeout: 5
     topic: appro-event
-    partition-offset:
-      - offset: 0
-        partition: 0
-      - offset: 0
-        partition: 1
-      - offset: 0
-        partition: 2
+#    partition-offset:
+#      - offset: 0
+#        partition: 0
+#      - offset: 0
+#        partition: 1
+#      - offset: 0
+#        partition: 2
 
 batch-storage:
   writer:

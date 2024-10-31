@@ -17,7 +17,7 @@ public class CommandTransformer implements TransformCommand {
     public OutputFile transform(@Nonnull OutputFile outputFile) {
         requireNonNull(outputFile, () -> "L'OutputFile ne peut pas être null");
 
-        log.info("Processing file {}", outputFile);
+        log.info("Traitement du fichier {}", outputFile);
         return outputFile;
     }
 }

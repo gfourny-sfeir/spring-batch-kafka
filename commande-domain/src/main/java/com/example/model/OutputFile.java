@@ -7,6 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record OutputFile(
+        @Nonnull Integer id,
         @Nonnull String nom,
         @Nonnull BigDecimal prixHt,
         @Nonnull String fournisseur
