@@ -13,7 +13,7 @@ import com.example.saver.Saver;
 public class PostgresWriterAutoConfiguration {
 
     @Bean
-    Saver fournitureSaver(JdbcClient jdbcClient) {
+    Saver saver(JdbcClient jdbcClient) {
         return new Saver(jdbcClient);
     }
 }

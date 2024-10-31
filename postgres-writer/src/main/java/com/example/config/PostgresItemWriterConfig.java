@@ -16,14 +16,14 @@ import com.example.saver.SaveFourniture;
 public class PostgresItemWriterConfig {
 
     @Bean
-    ItemWriter<List<Fourniture>> postgresItemWriter(SaveFourniture<Fourniture> saver) {
+    ItemWriter<List<Fourniture>> postgresItemWriter(SaveFourniture saver) {
         return chunk -> {
             CopyOnWriteArrayList<CompletableFuture<Void>> futures = new CopyOnWriteArrayList<>();
 
             try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
                 for (var items : chunk.getItems()) {
-                    for (var t : items) {
-                        var future = CompletableFuture.runAsync(() -> saver.save(t), executor);
+                    for (var item : items) {
+                        var future = CompletableFuture.runAsync(() -> saver.save(item), executor);
                         futures.add(future);
                     }
                 }

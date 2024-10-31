@@ -6,6 +6,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import com.example.Write;
 import com.example.model.OutputFile;
 import com.example.saver.FileSaver;
 import com.google.cloud.storage.BlobId;
@@ -14,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class FileWriter {
+public class FileWriter implements Write {
 
     private final FileSaver fileSaver;
 

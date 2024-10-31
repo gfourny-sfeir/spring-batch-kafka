@@ -1,6 +1,8 @@
 package com.example.saver;
 
-public interface SaveFourniture<T> {
+import com.example.model.Fourniture;
 
-    void save(T t);
+public interface SaveFourniture {
+
+    void save(Fourniture fourniture);
 }

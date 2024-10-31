@@ -2,14 +2,17 @@ package fr.example;
 
 import java.util.Map;
 
+import org.springframework.stereotype.Component;
+
 import com.example.model.Fourniture;
 import com.example.saver.SaveFourniture;
 import com.example.saver.Saver;
 
 import lombok.RequiredArgsConstructor;
 
+@Component
 @RequiredArgsConstructor
-public class FournitureSaver implements SaveFourniture<Fourniture> {
+public class FournitureSaver implements SaveFourniture {
 
     private final Saver saver;
 
