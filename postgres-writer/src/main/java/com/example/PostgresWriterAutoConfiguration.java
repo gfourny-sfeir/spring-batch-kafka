@@ -6,14 +6,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.jdbc.core.simple.JdbcClient;
 
 import com.example.config.PostgresItemWriterConfig;
-import com.example.writer.FournitureSaver;
+import com.example.saver.Saver;
 
 @AutoConfiguration
 @ImportAutoConfiguration(PostgresItemWriterConfig.class)
 public class PostgresWriterAutoConfiguration {
 
     @Bean
-    FournitureSaver fournitureSaver(JdbcClient jdbcClient) {
-        return new FournitureSaver(jdbcClient);
+    Saver fournitureSaver(JdbcClient jdbcClient) {
+        return new Saver(jdbcClient);
     }
 }

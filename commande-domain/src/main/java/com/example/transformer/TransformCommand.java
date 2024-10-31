@@ -2,7 +2,9 @@ package com.example.transformer;
 
 import com.example.model.OutputFile;
 
+import jakarta.annotation.Nonnull;
+
 public interface TransformCommand {
 
-    OutputFile transform(OutputFile outputFile);
+    OutputFile transform(@Nonnull OutputFile outputFile);
 }

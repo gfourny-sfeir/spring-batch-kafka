@@ -1,4 +1,4 @@
-package com.example.writer;
+package com.example.saver;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;

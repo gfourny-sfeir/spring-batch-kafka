@@ -11,8 +11,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.core.RowMapper;
 
-import com.example.model.OutputFile;
-
 import jakarta.annotation.Nonnull;
 
 import static org.apache.commons.lang3.ObjectUtils.allNotNull;

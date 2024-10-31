@@ -9,25 +9,22 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.example.model.Fourniture;
-import com.example.writer.FournitureSaver;
+import com.example.saver.SaveFourniture;
 
 @Configuration(proxyBeanMethods = false)
-public class PostgresItemWriterConfig {
+public class PostgresItemWriterConfig<T> {
 
     @Bean
-    ItemWriter<List<Fourniture>> fournitureItemWriter(FournitureSaver fournitureSaver) {
-
+    ItemWriter<List<T>> fournitureItemWriter(SaveFourniture<T> saver) {
         return chunk -> {
             CopyOnWriteArrayList<CompletableFuture<Void>> futures = new CopyOnWriteArrayList<>();
 
             try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
                 for (var items : chunk.getItems()) {
-                    for (var fourniture : items) {
-                        var future = CompletableFuture.runAsync(() -> fournitureSaver.save(fourniture), executor);
+                    for (var t : items) {
+                        var future = CompletableFuture.runAsync(() -> saver.save(t), executor);
                         futures.add(future);
                     }
-
                 }
             }
             futures.forEach(CompletableFuture::join);

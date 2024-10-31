@@ -5,7 +5,9 @@ import java.util.List;
 import com.example.model.Commande;
 import com.example.model.Fourniture;
 
+import jakarta.annotation.Nonnull;
+
 public interface FilterCommand {
 
-    List<Fourniture> filter(Commande commande);
+    List<Fourniture> filter(@Nonnull Commande commande);
 }

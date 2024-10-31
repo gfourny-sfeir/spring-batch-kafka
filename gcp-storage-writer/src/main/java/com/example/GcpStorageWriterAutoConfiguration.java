@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Import;
 
 import com.example.config.GcpStorageItemWriterConfig;
 import com.example.config.GcpStorageItemWriterProperties;
-import com.example.writer.FileSaver;
+import com.example.saver.FileSaver;
 import com.google.cloud.storage.Storage;
 
 @AutoConfiguration

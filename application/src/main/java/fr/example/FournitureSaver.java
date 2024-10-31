@@ -1,30 +1,30 @@
-package com.example.writer;
+package fr.example;
 
 import java.util.Map;
 
-import org.springframework.jdbc.core.simple.JdbcClient;
-
 import com.example.model.Fourniture;
+import com.example.saver.SaveFourniture;
+import com.example.saver.Saver;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor
-@Slf4j
-public class FournitureSaver {
+public class FournitureSaver implements SaveFourniture<Fourniture> {
 
-    private final JdbcClient jdbcClient;
+    private final Saver saver;
 
+    @Override
     public void save(Fourniture fourniture) {
-        log.info("Saving fourniture {}", fourniture);
-        jdbcClient.sql("""
+        saver.save(
+                fourniture,
+                /*language=PostgreSQL*/
+                """
                         insert into fourniture (nom, prix_ht, fournisseur) values (:nom, :prixHT, :nomFournisseur)
-                        """)
-                .params(Map.of(
+                        """,
+                Map.of(
                         "nom", fourniture.nom(),
                         "prixHT", fourniture.prixHT(),
                         "nomFournisseur", fourniture.fournisseur().nom()
-                ))
-                .update();
+                ));
     }
 }
