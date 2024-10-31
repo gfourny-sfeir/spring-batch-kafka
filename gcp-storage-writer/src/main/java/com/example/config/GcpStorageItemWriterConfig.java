@@ -17,7 +17,7 @@ import com.example.model.OutputFile;
 public class GcpStorageItemWriterConfig {
 
     @Bean
-    ItemWriter<OutputFile> fileItemWriter(Write writer) {
+    <T> ItemWriter<T> fileItemWriter(Write<T> writer) {
         return chunk -> {
             CopyOnWriteArrayList<CompletableFuture<Void>> futures = new CopyOnWriteArrayList<>();
 

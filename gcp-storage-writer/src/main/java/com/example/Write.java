@@ -1,9 +1,8 @@
 package com.example;
 
-import com.example.model.OutputFile;
 import com.google.cloud.storage.BlobId;
 
-public interface Write {
+public interface Write<T> {
 
-    BlobId write(OutputFile outputFile);
+    BlobId write(T t);
 }

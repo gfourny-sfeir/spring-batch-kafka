@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
-public class FileWriter implements Write {
+public class FileWriter implements Write<OutputFile> {
 
     private final FileSaver fileSaver;
 
