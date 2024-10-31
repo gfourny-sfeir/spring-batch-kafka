@@ -24,6 +24,6 @@ public record KafkaItemReaderProperties(
     public record PartitionOffset(
             @Nonnull Integer partition,
             @Nonnull Long offset
-    ){
+    ) {
     }
 }
