@@ -2,8 +2,7 @@ package fr.example.config;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
+import java.util.function.Consumer;
 
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -12,15 +11,14 @@ import org.springframework.batch.core.launch.support.RunIdIncrementer;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.ItemReader;
 import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcPagingItemReader;
 import org.springframework.batch.item.database.Order;
-import org.springframework.batch.item.database.builder.JdbcPagingItemReaderBuilder;
 import org.springframework.batch.item.database.support.PostgresPagingQueryProvider;
 import org.springframework.batch.item.kafka.KafkaItemReader;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import com.example.model.Commande;
@@ -62,35 +60,33 @@ public class BatchConfig {
     }
 
     @Bean
-    JdbcPagingItemReader<OutputFile> fournitureItemReader(DataSource dataSource) {
+    Consumer<PostgresPagingQueryProvider> queryProviderConsumer() {
+        return provider -> {
+            provider.setSelectClause("*");
+            provider.setFromClause("fourniture");
+            provider.setSortKeys(Map.of("id", Order.ASCENDING));
+        };
+    }
 
-        PostgresPagingQueryProvider provider = new PostgresPagingQueryProvider();
-        provider.setSelectClause("*");
-        provider.setFromClause("fourniture");
-        provider.setSortKeys(Map.of("id", Order.ASCENDING));
-
-        return new JdbcPagingItemReaderBuilder<OutputFile>().name("fourniture-retriever")
-                .saveState(true)
-                .dataSource(dataSource)
-                .fetchSize(50)
-                .rowMapper((rs, rowNum) -> OutputFile.builder()
-                        .nom(rs.getString("nom"))
-                        .prixHt(rs.getBigDecimal("prix_ht"))
-                        .fournisseur(rs.getString("fournisseur"))
-                        .build())
-                .queryProvider(provider)
+    @Bean
+    RowMapper<?> rowMapper() {
+        return (rs, rowNum) -> OutputFile.builder()
+                .nom(rs.getString("nom"))
+                .prixHt(rs.getBigDecimal("prix_ht"))
+                .fournisseur(rs.getString("fournisseur"))
                 .build();
+
     }
 
     @Bean
     Step writeToBucket(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
-            ItemReader<OutputFile> itemReader,
+            JdbcPagingItemReader<OutputFile> fournitureItemReader,
             ItemWriter<OutputFile> fileItemWriter) {
         return new StepBuilder("writeToBucket", jobRepository)
                 .<OutputFile, OutputFile>chunk(10, transactionManager)
-                .reader(itemReader)
+                .reader(fournitureItemReader)
                 .processor(item -> {
                     log.info("Processing file {}", item);
                     return item;

@@ -1,24 +1,43 @@
 package com.example.writer;
 
-import java.util.UUID;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
 
-import com.example.model.OutputFile;
-import com.google.cloud.storage.Blob;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
+
+import com.example.config.GcpStorageItemWriterProperties;
 import com.google.cloud.storage.BlobId;
 import com.google.cloud.storage.BlobInfo;
 import com.google.cloud.storage.Storage;
+import com.google.cloud.storage.StorageException;
 
+import jakarta.annotation.Nonnull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import static org.apache.commons.lang3.ObjectUtils.allNotNull;
 
 @RequiredArgsConstructor
 @Slf4j
 public class FileSaver {
 
     private final Storage storage;
+    private final GcpStorageItemWriterProperties properties;
 
-    public BlobId save(OutputFile outputFile) {
-        final var blobInfo = BlobInfo.newBuilder("bucket-fourniture", UUID.randomUUID().toString()).build();
-        return storage.create(blobInfo, outputFile.toString().getBytes()).getBlobId();
+    @Retryable(
+            maxAttemptsExpression = "${batch-storage.writer.retry-write.max-attempts}",
+            backoff = @Backoff(
+                    delayExpression = "${batch-storage.writer.retry-write.delay}",
+                    maxDelayExpression = "${batch-storage.writer.retry-write.max-delay}"),
+            retryFor = StorageException.class)
+    public BlobId save(@Nonnull Supplier<byte[]> content, @Nonnull String fileName, @Nonnull Consumer<BlobInfo.Builder> blobInfoBuilder) {
+        allNotNull(content, fileName, blobInfoBuilder);
+
+        var builder = BlobInfo.newBuilder(properties.bucketName(), fileName);
+
+        blobInfoBuilder.accept(builder);
+
+        return storage.create(builder.build(), content.get()).getBlobId();
     }
 }
