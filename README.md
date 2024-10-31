@@ -10,6 +10,6 @@ Repository d'exemple d'application Spring Batch avec intégration:
 flowchart TD
     B@{shape: procs, label: "Step Filtrage"} --> |Récupération des commandes| A(Kafka)
     B --> |Enregistrement des fournitures| C[(PostgreSQL)]
-    D@{shape: procs, label: "Step Transformation"} --> |Récupération des fourniture| C
-    D --> |Ecriture des fichiers| EA@{ shape: lin-cyl, label: "GCP Storage"}
+    D@{shape: procs, label: "Step Transformation"} --> |Récupération des fournitures| C
+    D --> |Écriture des fichiers| EA@{ shape: lin-cyl, label: "GCP Storage"}
 ```
