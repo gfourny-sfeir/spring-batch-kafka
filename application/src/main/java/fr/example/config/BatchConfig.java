@@ -34,6 +34,14 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class BatchConfig {
 
+    /**
+     * Définition du job de traitement
+     *
+     * @param jobRepository   {@link JobRepository}
+     * @param retrieveCommand {@link Step}
+     * @param writeToBucket   {@link Step}
+     * @return {@link Job}
+     */
     @Bean
     Job commandJob(JobRepository jobRepository, Step retrieveCommand, Step writeToBucket) {
         return new JobBuilder("commandJob", jobRepository)
@@ -43,6 +51,21 @@ public class BatchConfig {
                 .build();
     }
 
+    /**
+     * Etape de récupération des commandes :
+     * <pre>
+     *     - Consomme les partitions d'un topic Kafka configuré (KafkaItemReader)
+     *     - Filtre les commandes (FilterCommand utilisé dans un ItemProcessor)
+     *     - Enregistre les fournitures en base de données (ItemWriter)
+     * </pre>
+     *
+     * @param jobRepository      {@link JobRepository}
+     * @param transactionManager {@link PlatformTransactionManager}
+     * @param kafkaItemReader    {@link KafkaItemReader}
+     * @param filterCommand      {@link FilterCommand}
+     * @param postgresItemWriter {@link ItemWriter}
+     * @return {@link Step}
+     */
     @Bean
     Step retrieveCommand(
             JobRepository jobRepository,
@@ -61,6 +84,11 @@ public class BatchConfig {
                 .build();
     }
 
+    /**
+     * Spécification de la requête permettant de récupérer les fournitures
+     *
+     * @return {@link Consumer}
+     */
     @Bean
     Consumer<PostgresPagingQueryProvider> queryProviderConsumer() {
         return provider -> {
@@ -71,8 +99,13 @@ public class BatchConfig {
         };
     }
 
+    /**
+     * Spécification d'un {@link RowMapper} permettant de construire un {@link OutputFile} à partir des résultats de la requête
+     *
+     * @return {@link RowMapper}
+     */
     @Bean
-    RowMapper<?> rowMapper() {
+    RowMapper<OutputFile> rowMapper() {
         return (rs, rowNum) -> OutputFile.builder()
                 .id(rs.getInt("id"))
                 .nom(rs.getString("nom"))
@@ -82,19 +115,33 @@ public class BatchConfig {
 
     }
 
-    @Bean
-    ItemProcessor<OutputFile, OutputFile> processor(TransformCommand transformCommand) {
-        return transformCommand::transform;
-    }
-
+    /**
+     * Etape d'enregistrement des fournitures sur le bucket GCP :
+     * <pre>
+     *     - Récupère les fournitures en base de données
+     *     - Applique une transformation de fichier
+     *     - Ecrit les fichiers sur le bucket
+     * </pre>
+     *
+     * @param jobRepository         {@link JobRepository}
+     * @param transactionManager    {@link PlatformTransactionManager}
+     * @param fournitureItemReader  {@link JdbcPagingItemReader}
+     * @param fileItemWriter        {@link ItemWriter}
+     * @param transformCommand      {@link TransformCommand}
+     * @param storageWriterListener {@link StorageWriterListener}
+     * @return {@link Step}
+     */
     @Bean
     Step writeToBucket(
             JobRepository jobRepository,
             PlatformTransactionManager transactionManager,
             JdbcPagingItemReader<OutputFile> fournitureItemReader,
             ItemWriter<OutputFile> fileItemWriter,
-            ItemProcessor<OutputFile, OutputFile> processor,
+            TransformCommand transformCommand,
             StorageWriterListener storageWriterListener) {
+
+        ItemProcessor<OutputFile, OutputFile> processor = transformCommand::transform;
+
         return new StepBuilder("writeToBucket", jobRepository)
                 .<OutputFile, OutputFile>chunk(10, transactionManager)
                 .reader(fournitureItemReader)
