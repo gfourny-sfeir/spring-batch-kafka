@@ -1,8 +1,9 @@
 package com.example.config;
 
 import java.time.Duration;
+import java.util.Collection;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Collectors;
 
@@ -23,7 +24,9 @@ public class KafkaItemReaderConfig<T, R> {
         var properties = new Properties();
         properties.putAll(kafkaProperties.buildConsumerProperties(null));
 
-        final var partitionOffsets = isNull(kafkaItemReaderProperties.partitionOffset()) ? new HashMap<>() : buildTopicPartition(kafkaItemReaderProperties);
+        final var partitionOffsets = isNull(kafkaItemReaderProperties.partitionOffset()) ?
+                new HashMap<TopicPartition, Long>() :
+                buildTopicPartition(kafkaItemReaderProperties);
 
         return new KafkaItemReaderBuilder<T, R>()
                 .consumerProperties(properties)
@@ -31,22 +34,28 @@ public class KafkaItemReaderConfig<T, R> {
                 .topic(kafkaItemReaderProperties.topic())
                 .saveState(true)
                 .name(kafkaItemReaderProperties.processName())
-                .partitionOffsets(new HashMap<>())
+                .partitionOffsets(partitionOffsets)
                 .pollTimeout(Duration.ofSeconds(kafkaItemReaderProperties.pollTimeout()))
                 .build();
     }
 
-    private Map<TopicPartition, Long> buildTopicPartition(KafkaItemReaderProperties kafkaItemReaderProperties) {
+    private HashMap<TopicPartition, Long> buildTopicPartition(KafkaItemReaderProperties kafkaItemReaderProperties) {
 
         record PartitionOffset(TopicPartition topicPartition, long offset) {
         }
 
-        return kafkaItemReaderProperties.partitionOffset()
+        return Optional.ofNullable(kafkaItemReaderProperties.partitionOffset())
                 .stream()
+                .flatMap(Collection::stream)
                 .map(partitionOffset -> new PartitionOffset(
                         new TopicPartition(kafkaItemReaderProperties.topic(), partitionOffset.partition()),
                         partitionOffset.offset()
                 ))
-                .collect(Collectors.toMap(PartitionOffset::topicPartition, PartitionOffset::offset));
+                .collect(Collectors.toMap(
+                        PartitionOffset::topicPartition,
+                        PartitionOffset::offset,
+                        (first, second) -> second,
+                        HashMap::new)
+                );
     }
 }

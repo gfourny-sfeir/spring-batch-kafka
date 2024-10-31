@@ -29,3 +29,13 @@ spring:
   cloud:
     gcp:
       project-id: emulator
+
+commande:
+  batch:
+    partitions:
+      - 0
+      - 1
+      - 2
+    process-name: retrieveCommande
+    poll-timeout: 5
+    topic: appro-event
