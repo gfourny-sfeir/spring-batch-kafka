@@ -11,7 +11,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 
-@ConfigurationProperties(prefix = "commande.batch")
+@ConfigurationProperties(prefix = "batch-kafka.reader")
 @Validated
 public record KafkaItemReaderProperties(
         @NotBlank String processName,

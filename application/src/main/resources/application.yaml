@@ -30,8 +30,8 @@ spring:
     gcp:
       project-id: emulator
 
-commande:
-  batch:
+batch-kafka:
+  reader:
     partitions:
       - 0
       - 1
