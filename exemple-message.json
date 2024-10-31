@@ -1,0 +1,22 @@
+{
+  "fournitures": [
+    {
+      "nom": "gateaux",
+      "prixHT": 3.87,
+      "fournisseur": {
+        "nom": "Google",
+        "adresse": "adresse",
+        "siret": "siret"
+      }
+    },
+    {
+      "nom": "lait",
+      "prixHT": 1.55,
+      "fournisseur": {
+        "nom": "Google",
+        "adresse": "adresse",
+        "siret": "siret"
+      }
+    }
+  ]
+}
