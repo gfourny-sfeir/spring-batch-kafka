@@ -82,7 +82,3 @@ batch-kafka:
         partition: 2
 ```
 📘 La description des propriétés custom est expliquée dans le fichier [CONFIGURATION.md](CONFIGURATION.md)
-
-# ✍️ RAF
-- TU
-- TI
