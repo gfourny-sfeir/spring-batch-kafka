@@ -1,9 +1,11 @@
 package com.example.saver;
 
-import java.util.Map;
+import java.util.List;
 
-import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ParameterizedPreparedStatementSetter;
 
+import com.example.config.PostgresItemWriterProperties;
 import com.example.model.Fourniture;
 
 import jakarta.annotation.Nonnull;
@@ -16,15 +18,19 @@ import static org.apache.commons.lang3.ObjectUtils.allNotNull;
 @Slf4j
 public class Saver {
 
-    private final JdbcClient jdbcClient;
+    private final JdbcTemplate jdbcTemplate;
+    private final PostgresItemWriterProperties properties;
 
-    public void save(@Nonnull Fourniture fourniture, @Nonnull String request, @Nonnull Map<String, ?> parameters) {
-        allNotNull(fourniture, request, parameters);
+    public void save(@Nonnull List<Fourniture> fournitures, @Nonnull String request, @Nonnull ParameterizedPreparedStatementSetter<Fourniture> pss) {
+        allNotNull(fournitures, request, pss);
 
-        log.info("Enregistrement de la fourniture {}", fourniture);
+        log.info("Enregistrement des fournitures {}", fournitures);
 
-        jdbcClient.sql(request)
-                .params(parameters)
-                .update();
+        jdbcTemplate.batchUpdate(
+                request,
+                fournitures,
+                properties.batchSize(),
+                pss
+        );
     }
 }

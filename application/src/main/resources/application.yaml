@@ -61,3 +61,5 @@ batch-postgres:
   reader:
     process-name: retrieve-fourniture
     fetch-size: 50
+  writer:
+    batch-size: 50

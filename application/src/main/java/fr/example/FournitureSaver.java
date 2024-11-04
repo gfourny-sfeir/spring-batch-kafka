@@ -1,6 +1,6 @@
 package fr.example;
 
-import java.util.Map;
+import java.util.List;
 
 import org.springframework.stereotype.Component;
 
@@ -20,19 +20,20 @@ public class FournitureSaver implements SaveFourniture {
     private final Saver saver;
 
     @Override
-    public void save(@Nonnull Fourniture fourniture) {
-        requireNonNull(fourniture, () -> "La fourniture ne doit pas être null");
+    public void save(@Nonnull List<Fourniture> fournitures) {
+        requireNonNull(fournitures, () -> "La liste des fournitures ne doit pas être null");
 
         saver.save(
-                fourniture,
+                fournitures,
                 /*language=PostgreSQL*/
                 """
-                        insert into fourniture (nom, prix_ht, fournisseur) values (:nom, :prixHT, :nomFournisseur)
+                        insert into fourniture (nom, prix_ht, fournisseur) values (?, ?, ?)
                         """,
-                Map.of(
-                        "nom", fourniture.nom(),
-                        "prixHT", fourniture.prixHT(),
-                        "nomFournisseur", fourniture.fournisseur().nom()
-                ));
+                (ps, argument) -> {
+                    ps.setString(1, argument.nom());
+                    ps.setBigDecimal(2, argument.prixHT());
+                    ps.setString(3, argument.fournisseur().nom());
+                }
+        );
     }
 }
