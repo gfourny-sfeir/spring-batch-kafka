@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.batch.core.ExitStatus;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -17,6 +18,8 @@ import org.springframework.batch.test.context.SpringBatchTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.Import;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.test.context.junit.jupiter.SpringJUnitConfig;
@@ -36,6 +39,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @EnableBatchProcessing
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Lorsque de l'exécution du job")
+@ExtendWith(OutputCaptureExtension.class)
 public class ApplicationTest {
 
     @Autowired
@@ -58,7 +62,7 @@ public class ApplicationTest {
 
     @DisplayName("Les messages doivent être consommés")
     @Test
-    void jobExecution() throws Exception {
+    void jobExecution(CapturedOutput output) throws Exception {
         // Given ⌖
 
         // When 👉
@@ -69,6 +73,8 @@ public class ApplicationTest {
                 .isNotNull()
                 .extracting(JobExecution::getExitStatus)
                 .isEqualTo(ExitStatus.COMPLETED);
+
+        assertThat(output).contains("Mise à jour des éléments traités");
     }
 
     private List<Commande> buildCommandes() {
