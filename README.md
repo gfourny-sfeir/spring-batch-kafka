@@ -50,4 +50,3 @@ flowchart TD
 - TU
 - TI
 - Doc
-- Gestion acquittement des messages Kafka en cas d'erreur
