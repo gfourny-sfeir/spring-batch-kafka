@@ -28,8 +28,8 @@ Ce repo présente plusieurs modules :
 >   - Fourni une configuration des propriétés via le fichier application.yaml
 >   - Composant générique n'ayant pas besoin du module commande-domain
 > - **postgres-writer** :
->   - Adapter implémentant un ItemWriter custom permettant d'écrire l'objet du commande-domain dans une base de donnée
->   - Composant spécifique au métier commande-domain
+>   - Adapter implémentant un JdbcBatchItemWriter permettant d'effectuer du batch insert en base de données
+>   - Composant générique n'ayant pas besoin du module commande-domain
 
 # 🏎️ Utilisation de l'application
 

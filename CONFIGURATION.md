@@ -13,4 +13,3 @@
 | batch-storage.writer.retry-write.max-delay    |                                Délais en milliseconde maximum de tentative d'écriture                                |
 | batch-postgres.reader.process-name            | Nom du processus de récupération des éléments en base de données utilisé pour le suivi dans les tables Spring Batch  |
 | batch-postgres.reader.fetch-size              |                                   Nombre maximum d'éléments retournés par requêtes                                   |
-| batch-postgres.writer.batch-size              |                                              Taille du batch d'écriture                                              |
