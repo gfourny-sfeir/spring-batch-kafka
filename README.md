@@ -38,6 +38,12 @@ Monter l'infra en local:
 docker compose up
 ```
 
+Ensuite, il sera nécessaire de produire des messages sur le topic appro-event. Pour cela, deux solutions possibles :
+- Utiliser le plugin [Kafka](https://www.jetbrains.com/help/idea/big-data-tools-kafka.html) d'Intellij et se baser sur l'exemple [exemple-message.json](exemple-message.json)
+- Utiliser la requête HTTP présente dans [request.http](request.http) qui s'appuie sur un conteneur [REST-Proxy](https://docs.confluent.io/platform/current/kafka-rest/api.html)
+
+Vous pourrez alors démarrer l'application qui se chargera d'effectuer le traitement décris ci-dessous 👇
+
 # 📊 FLow Chart
 ```mermaid
 flowchart TD
@@ -46,7 +52,37 @@ flowchart TD
     D@{shape: procs, label: "Step Transformation"} --> |Récupération des fournitures| C
     D --> |Écriture des fichiers| EA@{ shape: lin-cyl, label: "GCP Storage"}
 ```
+
+## 🎯 Précisions
+🗃️ L'écriture et la mise à jour des entrées en base s'effectue en mode Batch via l'utilisation du Bean JdbcTemplate.<br/>
+📑 La lecture des entrées repose sur l'utilisation d'un JdbcPagingItemReader.<br/>
+❌ Les messages Kafka ne sont pas acquittés tant qu'ils n'ont pas été enregistrés dans la base de données.<br/>
+👍 Une configuration permet de spécifier l'offset d'une ou des partitions à partir duquel commencer la consommation :
+```yaml
+batch-kafka:
+  reader:
+    # Partitions à consommer
+    partitions:
+      - 0
+      - 1
+      - 2
+    # Nom du processus utilisé pour le suivi dans les tables Spring Batch
+    process-name: retrieveCommande
+    # Durée maximum d'attente après la consommation du dernier message avec de passer au step de transformation
+    poll-timeout: 5
+    # Topic de lecture
+    topic: appro-event
+    # Facultatif, permet de spécifier les offsets des partitions consommées (rejeu)
+    partition-offset:
+      - offset: 0
+        partition: 0
+      - offset: 0
+        partition: 1
+      - offset: 0
+        partition: 2
+```
+📘 La description des propriétés custom est expliquée dans le fichier [CONFIGURATION.md](CONFIGURATION.md)
+
 # ✍️ RAF
 - TU
 - TI
-- Doc

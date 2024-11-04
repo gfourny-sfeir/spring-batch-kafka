@@ -51,6 +51,7 @@ services:
       KAFKA_BROKER_ID: ignored
       KAFKA_ZOOKEEPER_CONNECT: ignored
 
+  ### Emulateur de GCP Storage https://github.com/fsouza/fake-gcs-server
   appro-storage:
     image: fsouza/fake-gcs-server
     command: [ "-scheme", "both", "-data", "/data" ]
@@ -65,3 +66,17 @@ services:
       interval: 5s
       timeout: 10s
       retries: 3
+
+  ### Permet d'utiliser les API Rest Kafka https://docs.confluent.io/platform/current/kafka-rest/api.html
+  rest-proxy:
+    image: confluentinc/cp-kafka-rest:latest
+    depends_on:
+      - kafka
+    ports:
+      - "8082:8082"
+    hostname: rest-proxy
+    container_name: rest-proxy
+    environment:
+      KAFKA_REST_HOST_NAME: rest-proxy
+      KAFKA_REST_BOOTSTRAP_SERVERS: 'kafka:29092'
+      KAFKA_REST_LISTENERS: "http://0.0.0.0:8082"

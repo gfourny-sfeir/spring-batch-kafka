@@ -19,7 +19,7 @@ spring:
         spring.json.trusted.packages: "*"
         spring.json.use.type.headers: false
         spring.json.value.default.type: com.example.model.Commande
-      enable-auto-commit: false
+      enable-auto-commit: false # On souhaite acquitter les messages uniquement lorsqu'ils ont été enregistré en base de données
   batch:
     jdbc:
       initialize-schema: always
