@@ -8,6 +8,7 @@ import org.springframework.batch.item.ItemWriter;
 import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.support.CompositeItemWriter;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -45,7 +46,9 @@ class StorageWriterConfig {
      * @return {@link CompositeItemWriter}
      */
     @Bean
-    CompositeItemWriter<OutputFile> compositeItemWriter(ItemWriter<OutputFile> fileItemWriter, JdbcBatchItemWriter<OutputFile> updateFournitureTreated) {
+    CompositeItemWriter<OutputFile> compositeItemWriter(
+            @Qualifier("fileItemWriter") ItemWriter<OutputFile> fileItemWriter,
+            JdbcBatchItemWriter<OutputFile> updateFournitureTreated) {
         var compositeItemWriter = new CompositeItemWriter<OutputFile>();
         compositeItemWriter.setDelegates(List.of(fileItemWriter, updateFournitureTreated));
         return compositeItemWriter;
