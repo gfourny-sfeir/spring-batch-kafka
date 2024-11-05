@@ -82,3 +82,13 @@ batch-kafka:
         partition: 2
 ```
 📘 La description des propriétés custom est expliquée dans le fichier [CONFIGURATION.md](CONFIGURATION.md)
+
+# 🧑‍🏫 Bonnes pratiques
+
+- ❌ Ne pas gérer manuellement les transactions
+- ✅ Utiliser les spécialisations de Spring concernant les interfaces ItemReader / ItemWriter / ItemProcessor
+- ✅ Utiliser un découpage par lot (Chunk) et ne pas passer des listes entre ItemReader / ItemProcessor / ItemWriter
+- ❌ Ne pas utiliser les listeners pour effectuer un traitement
+- ✅ Utiliser les CompositeItemReader / CompositeItemProcessor / CompositeItemWriter pour chaîner plusieurs ItemReader / ItemProcessor / ItemWriter
+- ✅ Préférer l'implémentation de plusieurs ItemProcessor effectuant des petites tâches qu'un seul qui ferait plusieurs opérations sensibles
+  - 👉 Pour la gestion des transactions et des retry notamment
