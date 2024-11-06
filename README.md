@@ -54,7 +54,7 @@ flowchart TD
 ```
 
 ## 🎯 Précisions
-🗃️ L'écriture et la mise à jour des entrées en base s'effectue en mode Batch via l'utilisation du Bean JdbcTemplate.<br/>
+🗃️ L'écriture et la mise à jour des entrées en base s'effectue en mode Batch via l'utilisation de la spécialisation JdbcBatchItemWriter.<br/>
 📑 La lecture des entrées repose sur l'utilisation d'un JdbcPagingItemReader.<br/>
 ❌ Les messages Kafka ne sont pas acquittés tant qu'ils n'ont pas été enregistrés dans la base de données.<br/>
 👍 Une configuration permet de spécifier l'offset d'une ou des partitions à partir duquel commencer la consommation :
